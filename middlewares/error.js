@@ -1,5 +1,5 @@
 import ErrorHandler from '../utils/errorHandler'
-
+ 
 const onError = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500
     let error = {...err}
