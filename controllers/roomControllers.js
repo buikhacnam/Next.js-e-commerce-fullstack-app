@@ -1,8 +1,26 @@
 import Room from '../models/room'
 import ErrorHandler from '../utils/errorHandler'
 import catchAsyncError from '../middlewares/catchAsyncError'
+import APIFeatures from '../utils/apiFeatures'
 
-//create a new room 
+
+// get all rooms
+export const allRooms = catchAsyncError(async (req, res) => {
+	const features = new APIFeatures(Room.find({}), req.query)
+		.search()
+		.filter()
+	const rooms = await features.query
+	// afther running the search method, we get the result of the query, for exemple:
+	// const rooms = await Room.find({ address: { '$regex': 'new york', '$options': 'i' } })
+	res.status(200).json({
+		success: true,
+		count: rooms.length,
+		message: 'All Rooms',
+		rooms,
+	})
+})
+
+//create a new room
 export const newRoom = catchAsyncError(async (req, res) => {
 	const room = await Room.create(req.body)
 	res.status(200).json({
@@ -12,29 +30,18 @@ export const newRoom = catchAsyncError(async (req, res) => {
 	})
 })
 
-// get all rooms
-export const allRooms = catchAsyncError(async (req, res) => {
-	const rooms = await Room.find({})
-	res.status(200).json({
-		success: true,
-		message: 'All Rooms',
-		rooms,
-		count: rooms.length,
-	})
-})
-
 // get details of a room
 export const getSingleRoom = catchAsyncError(async (req, res, next) => {
-		// in Next, we use req.query.id instead of req.params.id
-		const room = await Room.findById(req.query.id)
-		if (!room) {
-			return next(new ErrorHandler('Room not found', 404))
-		}
-		res.status(200).json({
-			success: true,
-			message: 'Room Details',
-			room,
-		})
+	// in Next, we use req.query.id instead of req.params.id
+	const room = await Room.findById(req.query.id)
+	if (!room) {
+		return next(new ErrorHandler('Room not found', 404))
+	}
+	res.status(200).json({
+		success: true,
+		message: 'Room Details',
+		room,
+	})
 })
 
 //update room details
