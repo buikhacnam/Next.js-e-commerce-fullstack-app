@@ -6,15 +6,30 @@ import APIFeatures from '../utils/apiFeatures'
 
 // get all rooms
 export const allRooms = catchAsyncError(async (req, res) => {
+	const resPerPage = 4
+	// get the total number of rooms (all conditions)
+	const roomsCount = await Room.countDocuments()
 	const features = new APIFeatures(Room.find({}), req.query)
 		.search()
 		.filter()
-	const rooms = await features.query
+	let rooms = await features.query
 	// afther running the search method, we get the result of the query, for exemple:
 	// const rooms = await Room.find({ address: { '$regex': 'new york', '$options': 'i' } })
+	
+	// get number of rooms after filtering above
+	let filteredRoomsCount = rooms.length
+
+	// get rooms after doing pagination
+	features.pagination(resPerPage)
+	// query the room again after pagination
+	// need to add clone to avoid 'Query was already executed' error
+	rooms = await features.query.clone()
+	
 	res.status(200).json({
 		success: true,
-		count: rooms.length,
+		roomsCount,
+		resPerPage,
+		filteredRoomsCount,
 		message: 'All Rooms',
 		rooms,
 	})
