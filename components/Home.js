@@ -1,5 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+import { useSelector } from 'react-redux'
 const Home = () => {
+	const rooms = useSelector(state => state.allRooms)
+	console.log('rooms', rooms)
 	return (
 		<section id='rooms' className='container mt-5'>
 			<h2 className='mb-3 ml-2 stays-heading'>Stays in New York</h2>

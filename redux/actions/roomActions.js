@@ -8,10 +8,10 @@ import absoluteUrl from 'next-absolute-url'
 
 // Get all rooms
 export const getAllRooms = req => {
-	return dispatch => {
+	return async dispatch => {
 		try {
 			const { origin } = absoluteUrl(req) // get the origin of the app
-			const { data } = axios.get(`${origin}/api/rooms`)
+			const { data } = await axios.get(`${origin}/api/rooms`)
 			dispatch({
 				type: ALL_ROOMS_SUCCESS,
 				payload: data,
