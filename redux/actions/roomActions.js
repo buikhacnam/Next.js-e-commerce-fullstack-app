@@ -9,11 +9,14 @@ import {
 import absoluteUrl from 'next-absolute-url'
 
 // Get all rooms
-export const getAllRooms = req => {
+export const getAllRooms = (req, query) => {
 	return async dispatch => {
 		try {
 			const { origin } = absoluteUrl(req) // get the origin of the app
-			const { data } = await axios.get(`${origin}/api/rooms`)
+			let url = `${origin}/api/rooms?page=${query?.page || 1}&location=${query?.location || ''}`
+			if(query?.guests) url += `&guestCapacity=${query.guests}`
+			if(query?.category) url += `&category=${query.category}`
+			const { data } = await axios.get(url)
 			dispatch({
 				type: ALL_ROOMS_SUCCESS,
 				payload: data,
