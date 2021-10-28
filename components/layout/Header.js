@@ -10,18 +10,22 @@ export default function Header() {
 						<div className='navbar-brand'>
 							<Link href='/' passHref>
 								<img
+									height='50'
+									width='50'
 									style={{ cursor: 'pointer' }}
-									src='/images/bookit_logo.png'
-									alt='BookIT'
+									src='https://cdn-icons-png.flaticon.com/512/852/852104.png'
+									alt='Adventure Cruise'
 								/>
 							</Link>
 						</div>
 					</div>
 
 					<div className='col-3 mt-3 mt-md-0 text-center'>
-						<a className='btn btn-danger px-4 text-white login-header-btn float-right'>
-							Login
-						</a>
+						<Link href='/login' passHref>
+							<a className='btn btn-danger px-4 text-white login-header-btn float-right'>
+								Login
+							</a>
+						</Link>
 					</div>
 				</div>
 			</nav>

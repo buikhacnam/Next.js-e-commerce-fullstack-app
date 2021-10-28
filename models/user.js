@@ -52,5 +52,10 @@ userSchema.pre('save', async function (next) {
     }
 })
 
+// Compare user password
+userSchema.methods.comparePassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password)
+}
+
 // syntax in nextjs:  if user model already exists, use it / if not create it
 module.exports = mongoose.models.User || mongoose.model('User', userSchema)
