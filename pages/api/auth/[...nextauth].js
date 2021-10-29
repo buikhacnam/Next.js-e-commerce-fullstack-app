@@ -8,7 +8,7 @@ export default NextAuth({
 		jwt: true,
 	},
     jwt: {
-        secret: 'process.env.JWT_SECRET',
+        secret: process.env.JWT_SECRET,
     },
 	providers: [
 		Providers.Credentials({
