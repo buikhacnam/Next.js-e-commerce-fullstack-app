@@ -13,7 +13,7 @@ export default function Header() {
 									height='50'
 									width='50'
 									style={{ cursor: 'pointer' }}
-									src='https://cdn-icons-png.flaticon.com/512/852/852104.png'
+									src='/images/sailboat.png'
 									alt='Adventure Cruise'
 								/>
 							</Link>
