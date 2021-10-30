@@ -1,20 +1,20 @@
 import {
 	REGISTER_USER_SUCCESS,
-	RESET_PASSWORD_FAIL,
+	REGISTER_USER_FAIL,
 	REGISTER_USER_REQUEST,
 	CLEAR_ERRORS,
 } from '../constants/userConstants'
 
 //Auth reducer
 
-export const authReducer = (state = { loading: false, user: null }, action) => {
+export const authReducer = (state = { loading: false, error: null, success: null }, action) => {
 	switch (action.type) {
 		case REGISTER_USER_SUCCESS:
 			return {
 				loading: false,
 				success: true,
 			}
-		case RESET_PASSWORD_FAIL:
+		case REGISTER_USER_FAIL:
 			return {
 				loading: false,
 				error: action.payload,
@@ -27,7 +27,8 @@ export const authReducer = (state = { loading: false, user: null }, action) => {
 			return {
 				...state,
 				loading: false,
-				user: null,
+				error: null,
+				success: null,
 			}
 		default:
 			return state

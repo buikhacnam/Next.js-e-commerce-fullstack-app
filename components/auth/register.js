@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { toast } from 'react-toastify'
-import { signIn } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import ButtonLoader from '../layout/ButtonLoader'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,15 +18,9 @@ const Register = () => {
 
 	useEffect(() => {
 		if (success) {
-			toast.success('Register Successfully!')
-			dispatch(clearErrors())
 			router.push('/login')
 		}
-		if (error) {
-			toast.error(error)
-			dispatch(clearErrors())
-		}
-	}, [dispatch, success, error])
+	}, [success])
 
 	const submitHandler = e => {
 		e.preventDefault()
