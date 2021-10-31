@@ -1,3 +1,4 @@
+// Next-auth: https://next-auth.js.org/getting-started/example
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import User from '../../../models/user'
