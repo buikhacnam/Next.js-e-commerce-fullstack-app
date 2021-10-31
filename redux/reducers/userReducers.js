@@ -10,22 +10,20 @@ import {
 
 //Auth reducer
 
-export const authReducer = (state = { loading: false, error: null, isAuthenticated: false }, action) => {
+export const authReducer = (state = { loading: false, error: null, success: null }, action) => {
 	switch (action.type) {
 		case REGISTER_USER_SUCCESS:
 			return {
 				loading: false,
-				isAuthenticated: true,
+				success: true,
 			}
 		case REGISTER_USER_FAIL:
 			return {
 				loading: false,
-				isAuthenticated: false,
 				error: action.payload,
 			}
 		case REGISTER_USER_REQUEST:
 			return {
-				isAuthenticated: false,
 				loading: true,
 			}
 		case CLEAR_ERRORS:
@@ -33,6 +31,7 @@ export const authReducer = (state = { loading: false, error: null, isAuthenticat
 				...state,
 				loading: false,
 				error: null,
+				success: null,
 			}
 		default:
 			return state
