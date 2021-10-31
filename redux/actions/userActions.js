@@ -3,6 +3,9 @@ import {
 	REGISTER_USER_SUCCESS,
 	REGISTER_USER_FAIL,
 	REGISTER_USER_REQUEST,
+	LOAD_USER_SUCCESS,
+	LOAD_USER_FAIL,
+	LOAD_USER_REQUEST,
 	CLEAR_ERRORS,
 } from '../constants/userConstants'
 import { toast } from 'react-toastify'
@@ -29,6 +32,19 @@ export const registerUser = (userData) => async dispatch => {
 		toast.error(error.response.data.message)
 		dispatch({ type: REGISTER_USER_FAIL, payload: error.response.data.message })
 		dispatch({ type: CLEAR_ERRORS })
+	}
+}
+
+// load user
+export const loadUser = () => {
+	return async dispatch => {
+	try {
+		dispatch({ type: LOAD_USER_REQUEST })
+		const {data} = await axios.get('/api/me')
+		dispatch({ type: LOAD_USER_SUCCESS, payload: data.user })
+	} catch (error) {
+		dispatch({ type: LOAD_USER_FAIL, payload: error.response.data.message })
+	}
 	}
 }
 

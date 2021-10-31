@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux'
 import { allRoomsReducer, roomDetailsReducer } from './roomReducers'
-import { authReducer } from './userReducers'
+import { authReducer, loadedUserReducer } from './userReducers'
 const rootReducer = combineReducers({
     allRooms: allRoomsReducer,
     roomDetails: roomDetailsReducer,
-    auth: authReducer
+    auth: authReducer,
+    loadedUser: loadedUserReducer,
 })
 
 export default rootReducer
