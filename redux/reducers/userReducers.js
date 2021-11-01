@@ -6,11 +6,18 @@ import {
 	LOAD_USER_SUCCESS,
 	LOAD_USER_FAIL,
 	LOAD_USER_REQUEST,
+	UPDATE_PROFILE_FAIL,
+	UPDATE_PROFILE_SUCCESS,
+	UPDATE_PROFILE_REQUEST,
+	UPDATE_PROFILE_RESET,
 } from '../constants/userConstants'
 
 //Auth reducer
 
-export const authReducer = (state = { loading: false, error: null, success: null }, action) => {
+export const authReducer = (
+	state = { loading: false, error: null, success: null },
+	action
+) => {
 	switch (action.type) {
 		case REGISTER_USER_SUCCESS:
 			return {
@@ -39,7 +46,10 @@ export const authReducer = (state = { loading: false, error: null, success: null
 }
 
 // Load user
-export const loadedUserReducer = (state = { loading: false, error: null, success: null, user: null }, action) => {
+export const loadedUserReducer = (
+	state = { loading: false, error: null, success: null, user: null },
+	action
+) => {
 	switch (action.type) {
 		case LOAD_USER_SUCCESS:
 			return {
@@ -62,6 +72,40 @@ export const loadedUserReducer = (state = { loading: false, error: null, success
 				loading: false,
 				error: null,
 				success: null,
+			}
+		default:
+			return state
+	}
+}
+
+// User update profile reducer
+export const updateProfileReducer = (
+	state = { loading: false, error: null, success: null, isUpdated: null },
+	action
+) => {
+	switch (action.type) {
+		case UPDATE_PROFILE_SUCCESS:
+			return {
+				loading: false,
+				success: true,
+				isUpdated: action.payload,
+			}
+		case UPDATE_PROFILE_FAIL:
+			return {
+				loading: false,
+				error: action.payload,
+			}
+		case UPDATE_PROFILE_REQUEST:
+			return {
+				loading: true,
+			}
+		case UPDATE_PROFILE_RESET:
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success: null,
+				isUpdated: null,
 			}
 		default:
 			return state

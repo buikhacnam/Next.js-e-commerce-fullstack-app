@@ -7,11 +7,15 @@ import {
 	LOAD_USER_FAIL,
 	LOAD_USER_REQUEST,
 	CLEAR_ERRORS,
+	UPDATE_PROFILE_FAIL,
+	UPDATE_PROFILE_SUCCESS,
+	UPDATE_PROFILE_REQUEST,
+	UPDATE_PROFILE_RESET,
 } from '../constants/userConstants'
 import { toast } from 'react-toastify'
 
 // Register User
-export const registerUser = (userData) => async dispatch => {
+export const registerUser = userData => async dispatch => {
 	console.log('history', history)
 	dispatch({ type: REGISTER_USER_REQUEST })
 	const config = {
@@ -30,7 +34,10 @@ export const registerUser = (userData) => async dispatch => {
 		dispatch({ type: CLEAR_ERRORS })
 	} catch (error) {
 		toast.error(error.response.data.message)
-		dispatch({ type: REGISTER_USER_FAIL, payload: error.response.data.message })
+		dispatch({
+			type: REGISTER_USER_FAIL,
+			payload: error.response.data.message,
+		})
 		dispatch({ type: CLEAR_ERRORS })
 	}
 }
@@ -38,13 +45,36 @@ export const registerUser = (userData) => async dispatch => {
 // load user
 export const loadUser = () => {
 	return async dispatch => {
-	try {
-		dispatch({ type: LOAD_USER_REQUEST })
-		const {data} = await axios.get('/api/me')
-		dispatch({ type: LOAD_USER_SUCCESS, payload: data.user })
-	} catch (error) {
-		dispatch({ type: LOAD_USER_FAIL, payload: error.response.data.message })
+		try {
+			dispatch({ type: LOAD_USER_REQUEST })
+			const { data } = await axios.get('/api/me')
+			dispatch({ type: LOAD_USER_SUCCESS, payload: data.user })
+		} catch (error) {
+			dispatch({
+				type: LOAD_USER_FAIL,
+				payload: error.response.data.message,
+			})
+		}
 	}
+}
+
+// update profile
+export const updateProfile = userData => async dispatch => {
+	dispatch({ type: UPDATE_PROFILE_REQUEST })
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	}
+	try {
+		const { data } = await axios.put('/api/me', userData, config)
+		dispatch({ type: UPDATE_PROFILE_SUCCESS, payload: data.user })
+	} catch (error) {
+		dispatch({
+			type: UPDATE_PROFILE_FAIL,
+			payload: error.response.data.message,
+		})
+		dispatch({ type: UPDATE_PROFILE_RESET })
 	}
 }
 

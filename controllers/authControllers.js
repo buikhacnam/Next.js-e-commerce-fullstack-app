@@ -2,6 +2,7 @@ import User from '../models/user'
 import cloudinary from 'cloudinary'
 
 import catchAsyncErrors from '../middlewares/catchAsyncError'
+import catchAsyncError from '../middlewares/catchAsyncError'
 
 // Setting up cloudinary config
 cloudinary.config({
@@ -40,6 +41,41 @@ export const registerUser = catchAsyncErrors(async (req, res) => {
 // Current User profile   =>   /api/auth/me
 export const getCurrentUser = catchAsyncErrors(async (req, res) => {
 	const user = await User.findById(req.user.sub)
+	res.status(200).json({
+		success: true,
+		user,
+	})
+})
+
+// update user profile => /api/me/update
+export const updateUserProfile = catchAsyncError(async (req, res) => {
+	const user = await User.findById(req.user.sub)
+	const { name, email, password, avatar } = req.body
+
+	if (name) user.name = name
+	if (email) user.email = email
+	if (password) user.password = password
+	if(avatar) {
+		const image_id = avatar.public_id
+
+		// delete old image
+		await cloudinary.v2.uploader.destroy(image_id)
+
+		// upload new image
+		const result = await cloudinary.v2.uploader.upload(avatar, {
+			folder: 'cruise/avatars',
+			width: '150',
+			crop: 'scale',
+		})
+
+		avatar = {
+			public_id: result.public_id,
+			url: result.secure_url,
+		}
+	}
+
+	await user.save()
+
 	res.status(200).json({
 		success: true,
 		user,
