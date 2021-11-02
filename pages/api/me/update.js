@@ -8,3 +8,5 @@ const handler = nc({ onError })
 dbConnect()
 
 handler.use(isAuthenticatedUser).put(updateUserProfile)
+
+export default handler

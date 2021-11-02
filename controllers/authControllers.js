@@ -51,28 +51,28 @@ export const getCurrentUser = catchAsyncErrors(async (req, res) => {
 export const updateUserProfile = catchAsyncError(async (req, res) => {
 	const user = await User.findById(req.user.sub)
 	const { name, email, password, avatar } = req.body
-
 	if (name) user.name = name
 	if (email) user.email = email
 	if (password) user.password = password
-	if(avatar) {
-		const image_id = avatar.public_id
+	if (avatar) {
 
-		// delete old image
-		await cloudinary.v2.uploader.destroy(image_id)
+        const image_id = user.avatar.public_id;
 
-		// upload new image
-		const result = await cloudinary.v2.uploader.upload(avatar, {
-			folder: 'cruise/avatars',
-			width: '150',
-			crop: 'scale',
-		})
+        // Delete user previous image/avatar
+        await cloudinary.v2.uploader.destroy(image_id);
 
-		avatar = {
-			public_id: result.public_id,
-			url: result.secure_url,
-		}
-	}
+        const result = await cloudinary.v2.uploader.upload(avatar, {
+            folder: 'cruise/avatars',
+            width: '150',
+            crop: 'scale'
+        })
+
+        user.avatar = {
+            public_id: result.public_id,
+            url: result.secure_url
+        }
+
+    }
 
 	await user.save()
 

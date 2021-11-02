@@ -67,15 +67,17 @@ export const updateProfile = userData => async dispatch => {
 		},
 	}
 	try {
-		const { data } = await axios.put('/api/me', userData, config)
+		const { data } = await axios.put('/api/me/update', userData, config)
+		toast.success('Update profile successfully!')
 		dispatch({ type: UPDATE_PROFILE_SUCCESS, payload: data.user })
 	} catch (error) {
+		toast.error(error.response.data.message)
 		dispatch({
 			type: UPDATE_PROFILE_FAIL,
 			payload: error.response.data.message,
 		})
-		dispatch({ type: UPDATE_PROFILE_RESET })
 	}
+	dispatch({ type: UPDATE_PROFILE_RESET })
 }
 
 // clear errors
