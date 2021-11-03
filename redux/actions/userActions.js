@@ -31,18 +31,18 @@ export const registerUser = userData => async dispatch => {
 		)
 		toast.success('Register account successfully!')
 		dispatch({ type: REGISTER_USER_SUCCESS })
-		dispatch({ type: CLEAR_ERRORS })
 	} catch (error) {
 		toast.error(error.response.data.message)
 		dispatch({
 			type: REGISTER_USER_FAIL,
 			payload: error.response.data.message,
 		})
-		dispatch({ type: CLEAR_ERRORS })
 	}
+	dispatch({ type: CLEAR_ERRORS })
+
 }
 
-// load user
+// load user: load when layout header is loaded
 export const loadUser = () => {
 	return async dispatch => {
 		try {

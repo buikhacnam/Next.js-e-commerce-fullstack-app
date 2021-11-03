@@ -1,5 +1,6 @@
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
@@ -55,6 +56,14 @@ userSchema.pre('save', async function (next) {
 // Compare user password
 userSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
+}
+
+// Generate password reset token
+userSchema.methods.generateResetPasswordToken = function () {
+    const resetToken = crypto.randomBytes(20).toString('hex')
+    this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000 //10 minutes
+    return resetToken
 }
 
 // syntax in nextjs:  if user model already exists, use it / if not create it
