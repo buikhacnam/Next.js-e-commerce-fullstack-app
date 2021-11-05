@@ -11,6 +11,9 @@ import {
 	UPDATE_PROFILE_SUCCESS,
 	UPDATE_PROFILE_REQUEST,
 	UPDATE_PROFILE_RESET,
+	FORGOT_PASSWORD_FAIL,
+	FORGOT_PASSWORD_SUCCESS,
+	FORGOT_PASSWORD_REQUEST,
 } from '../constants/userConstants'
 import { toast } from 'react-toastify'
 
@@ -78,6 +81,28 @@ export const updateProfile = userData => async dispatch => {
 		})
 	}
 	dispatch({ type: UPDATE_PROFILE_RESET })
+}
+
+// forgot password
+export const forgotPassword = email => async dispatch => {
+	dispatch({ type: FORGOT_PASSWORD_REQUEST })
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	}
+	try {
+		const { data } = await axios.post('/api/password/forgot', email, config)
+		toast.success('Reset password link is sent to ' + email.email)
+		// dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: data.message })
+	} catch (error) {
+		toast.error(error.response.data.message)
+		// dispatch({
+		// 	type: FORGOT_PASSWORD_FAIL,
+		// 	payload: error.response.data.message,
+		// })
+	}
+	dispatch({ type: CLEAR_ERRORS })
 }
 
 // clear errors

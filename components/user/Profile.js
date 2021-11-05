@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import ButtonLoader from '../../components/layout/ButtonLoader'
 import { updateProfile } from '../../redux/actions/userActions'
 import Loader from '../layout/Loader'
-import { UPDATE_PROFILE_RESET } from '../../redux/constants/userConstants'
 const Profile = () => {
 	const router = useRouter()
 	const dispatch = useDispatch()
