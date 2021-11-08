@@ -5,6 +5,7 @@ import catchAsyncError from '../middlewares/catchAsyncError'
 import absoluteUrl from 'next-absolute-url'
 import ErrorHandler from '../utils/errorHandler'
 import sendEmail from '../utils/sendEmail'
+import crypto from 'crypto'
 
 // Setting up cloudinary config
 cloudinary.config({
@@ -87,7 +88,7 @@ export const updateUserProfile = catchAsyncError(async (req, res, next) => {
 	})
 })
 
-// forget password   =>   /api/auth/forgot
+// forget password   =>   /api/password/forgot
 export const forgetPassword = catchAsyncErrors(async (req, res, next) => {
 	const { origin } = absoluteUrl(req)
 	const { email } = req.body
@@ -122,4 +123,38 @@ export const forgetPassword = catchAsyncErrors(async (req, res, next) => {
 		await user.save({ validateBeforeSave: false })
 		return next(new ErrorHandler(error.message, 500))
 	}
+})
+
+// reset password   =>   /api/password/reset/:token
+export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+	const { token } = req.query // req.query.token is the token from the url: req.params.token
+	const { password, confirmPassword } = req.body
+
+	if (password !== confirmPassword) {
+		return next(new ErrorHandler('Passwords do not match', 400))
+	}
+
+	const resetPasswordToken = await crypto
+		.createHash('sha256')
+		.update(token)
+		.digest('hex')
+
+	const user = await User.findOne({
+		resetPasswordToken,
+		resetPasswordExpire: { $gt: Date.now() },
+	})
+
+	if (!user) {
+		return next(new ErrorHandler('Invalid token', 400))
+	}
+	user.password = password
+	user.resetPasswordToken = undefined
+	user.resetPasswordExpire = undefined
+
+	await user.save()
+
+	res.status(200).json({
+		success: true,
+		message: 'Password reset successfully',
+	})
 })

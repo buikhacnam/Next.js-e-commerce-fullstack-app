@@ -14,6 +14,9 @@ import {
 	FORGOT_PASSWORD_FAIL,
 	FORGOT_PASSWORD_SUCCESS,
 	FORGOT_PASSWORD_REQUEST,
+	RESET_PASSWORD_FAIL,
+	RESET_PASSWORD_SUCCESS,
+	RESET_PASSWORD_REQUEST,
 } from '../constants/userConstants'
 import { toast } from 'react-toastify'
 
@@ -42,7 +45,6 @@ export const registerUser = userData => async dispatch => {
 		})
 	}
 	dispatch({ type: CLEAR_ERRORS })
-
 }
 
 // load user: load when layout header is loaded
@@ -105,6 +107,31 @@ export const forgotPassword = email => async dispatch => {
 	dispatch({ type: CLEAR_ERRORS })
 }
 
+// reset password
+export const resetPassword = (token, passwords) => async dispatch => {
+	dispatch({ type: FORGOT_PASSWORD_REQUEST })
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	}
+	try {
+		const { data } = await axios.put(
+			`/api/password/reset/${token}`,
+			passwords,
+			config
+		)
+		toast.success('Reset password successfully!')
+		dispatch({ type: RESET_PASSWORD_SUCCESS, payload: data.message })
+	} catch (error) {
+		toast.error(error.response.data.message)
+		// dispatch({
+		// 	type: RESET_PASSWORD_FAIL,
+		// 	payload: error.response.data.message,
+		// })
+	}
+	dispatch({ type: CLEAR_ERRORS })
+}
 // clear errors
 export const clearErrors = () => {
 	return dispatch => {

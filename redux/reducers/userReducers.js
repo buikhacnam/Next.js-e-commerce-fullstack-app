@@ -13,6 +13,9 @@ import {
 	FORGOT_PASSWORD_FAIL,
 	FORGOT_PASSWORD_SUCCESS,
 	FORGOT_PASSWORD_REQUEST,
+	RESET_PASSWORD_FAIL,
+	RESET_PASSWORD_SUCCESS,
+	RESET_PASSWORD_REQUEST,
 } from '../constants/userConstants'
 
 //Auth reducer
@@ -139,6 +142,38 @@ export const forgotPasswordReducer = (
 			}
 		case CLEAR_ERRORS:
 			console.log('clear errors forget password')
+			return {
+				...state,
+				loading: false,
+				error: null,
+				success: null,
+			}
+		default:
+			return state
+	}
+}
+
+//reset password reducer
+export const resetPasswordReducer = (
+	state = { loading: false, error: null, success: null },
+	action
+) => {
+	switch (action.type) {
+		case RESET_PASSWORD_SUCCESS:
+			return {
+				loading: false,
+				success: action.payload,
+			}
+		case RESET_PASSWORD_FAIL:
+			return {
+				loading: false,
+				error: action.payload,
+			}
+		case RESET_PASSWORD_REQUEST:
+			return {
+				loading: true,
+			}
+		case CLEAR_ERRORS:
 			return {
 				...state,
 				loading: false,
