@@ -6,6 +6,7 @@ import APIFeatures from '../utils/apiFeatures'
 
 // get all rooms
 export const allRooms = catchAsyncError(async (req, res) => {
+	console.log('req.query all rooms', req.query)
 	const resPerPage = 4
 	// get the total number of rooms (all conditions)
 	const roomsCount = await Room.countDocuments()

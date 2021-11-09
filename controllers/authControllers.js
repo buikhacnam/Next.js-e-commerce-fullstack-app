@@ -127,6 +127,7 @@ export const forgetPassword = catchAsyncErrors(async (req, res, next) => {
 
 // reset password   =>   /api/password/reset/:token
 export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+	console.log('req.query', req.query)
 	const { token } = req.query // req.query.token is the token from the url: req.params.token
 	const { password, confirmPassword } = req.body
 
