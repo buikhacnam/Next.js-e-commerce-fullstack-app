@@ -28,8 +28,46 @@ export const newBooking = catchAsyncErrors(async (req, res, next) => {
 		paymentInfo,
 	})
 
-    res.status(200).json({
-        success: true,
-        booking
-    })
+	res.status(200).json({
+		success: true,
+		booking,
+	})
 })
+
+// check room booking availability: /api/bookings/check
+export const checkRoomAvailability = catchAsyncErrors(
+	async (req, res, next) => {
+		const { roomId, checkInDate, checkOutDate } = req.query
+		const checkInDateQuery = new Date(checkInDate)
+		const checkOutDateQuery = new Date(checkOutDate)
+
+		const booking = await Booking.find({
+			room: roomId,
+			$and: [
+				{
+					// checkin date in db is not in between checkin and checkout date
+					checkInDate: {
+						$lte: checkOutDateQuery,
+					},
+				},
+				{
+					// checkout date in db is not in between checkin and checkout date
+					checkOutDate: {
+						$gte: checkInDateQuery,
+					},
+				},
+			],
+		})
+
+		let isAvailable = false
+
+		if (booking && booking.length === 0) {
+			isAvailable = true
+		}
+
+		return res.status(200).json({
+			success: true,
+			isAvailable,
+		})
+	}
+)

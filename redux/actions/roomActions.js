@@ -41,11 +41,13 @@ export const getRoomDetails = (req, id) => {
 				payload: data.room,
 			})
 		} catch (error) {
-			dispatch({
-				type: ROOM_DETAILS_FAIL,
-				payload: error.response.data.message,
-			})
+			toast.error(error.response.data.message)
+			// dispatch({
+			// 	type: ROOM_DETAILS_FAIL,
+			// 	payload: error.response.data.message,
+			// })
 		}
+		dispatch({type: CLEAR_ERRORS})
 	}
 }
 

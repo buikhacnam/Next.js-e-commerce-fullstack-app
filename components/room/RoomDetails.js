@@ -9,20 +9,20 @@ import RoomFeatures from './RoomFeatures'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useRouter } from 'next/router'
+import { checkBooking } from '../../redux/actions/bookingActions'
 
 const RoomDetails = () => {
 	const router = useRouter()
 	const dispatch = useDispatch()
 	const { room, error } = useSelector(state => state.roomDetails)
+	const { available, loading: bookingLoading } = useSelector(
+		state => state.checkBooking
+	)
+	const { user } = useSelector(state => state.loadedUser);
 	const [checkInDate, setCheckInDate] = useState(null)
 	const [checkOutDate, setCheckOutDate] = useState(null)
 	const [daysOfStay, setDaysOfStay] = useState(0)
-	useEffect(() => {
-		if (error) {
-			toast.error(error)
-			dispatch(clearErrors())
-		}
-	}, [])
+	const { id } = router.query
 
 	const onChange = dates => {
 		//dates is an array of start and end dates: [startDate, endDate]
@@ -35,12 +35,17 @@ const RoomDetails = () => {
 				(new Date(dates[1]) - new Date(dates[0])) / 86400000 + 1
 			)
 			setDaysOfStay(days)
+
+			console.log({
+				checkin: dates[0]?.toISOString(),
+				checkout: dates[1]?.toISOString(),
+			})
+			dispatch(
+				checkBooking(id, dates[0].toISOString(), dates[1].toISOString())
+			)
 		}
 
-		console.log({
-			checkin: dates[0]?.toISOString(),
-			checkout: dates[1]?.toISOString(),
-		})
+		
 	}
 
 	const newBookingHandler = () => {
@@ -124,7 +129,25 @@ const RoomDetails = () => {
 								endDate={checkOutDate}
 								selectsRange
 								inline
+								minDate={new Date()}
 							/>
+							{available === true && (
+								<div className='alert alert-success my-3 font-weight-bold'>
+									Room is available. Book now.
+								</div>
+							)}
+
+							{available === false && (
+								<div className='alert alert-danger my-3 font-weight-bold'>
+									Room not available. Try different dates.
+								</div>
+							)}
+
+							{available && !user && (
+								<div className='alert alert-danger my-3 font-weight-bold'>
+									Login to book room.
+								</div>
+							)}
 
 							<button
 								onClick={newBookingHandler}
