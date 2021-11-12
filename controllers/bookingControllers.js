@@ -6,9 +6,14 @@ import absoluteUrl from 'next-absolute-url'
 import ErrorHandler from '../utils/errorHandler'
 import sendEmail from '../utils/sendEmail'
 import crypto from 'crypto'
+import Moment from 'moment'
+import { extendMoment } from 'moment-range'
 
-// Create new booking: /api/bookings
+const moment = extendMoment(Moment)
+//POST Create new booking: /api/bookings
 export const newBooking = catchAsyncErrors(async (req, res, next) => {
+	console.log('req.body', req.body)
+	console.log('req.user', req.user.sub)
 	const {
 		room,
 		checkInDate,
@@ -18,9 +23,9 @@ export const newBooking = catchAsyncErrors(async (req, res, next) => {
 		paymentInfo,
 	} = req.body
 
-	const booking = await Booking.create({
+	const booking = new Booking({
 		room,
-		user: req.user._id,
+		user: req.user.sub,
 		checkInDate,
 		checkOutDate,
 		daysOfStay,
@@ -28,13 +33,15 @@ export const newBooking = catchAsyncErrors(async (req, res, next) => {
 		paymentInfo,
 	})
 
+	await booking.save()
+
 	res.status(200).json({
 		success: true,
 		booking,
 	})
 })
 
-// check room booking availability: /api/bookings/check
+//GET check room booking availability: /api/bookings/check
 export const checkRoomAvailability = catchAsyncErrors(
 	async (req, res, next) => {
 		const { roomId, checkInDate, checkOutDate } = req.query
@@ -71,3 +78,31 @@ export const checkRoomAvailability = catchAsyncErrors(
 		})
 	}
 )
+
+//GET check booked dates of a room (display days booked in calendar): /api/bookings/check-booked-dates
+
+export const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res, next) => {
+	const { roomId } = req.query
+
+	const bookings = await Booking.find({ room: roomId })
+
+	if (!bookings) {
+		next(new ErrorHandler(404, 'No bookings found'))
+	}
+	// store all booked dates in an array
+	let bookedDates = []
+
+	bookings.forEach(booking => {
+		const range = moment.range(
+			moment(booking.checkInDate),
+			moment(booking.checkOutDate)
+		)
+		const dates = Array.from(range.by('days'))
+		bookedDates = bookedDates.concat(dates)
+	})
+
+	res.status(200).json({
+		success: true,
+		bookedDates,
+	})
+})

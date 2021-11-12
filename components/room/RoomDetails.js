@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useRouter } from 'next/router'
 import { checkBooking } from '../../redux/actions/bookingActions'
+import axios from 'axios'
 
 const RoomDetails = () => {
 	const router = useRouter()
@@ -18,7 +19,7 @@ const RoomDetails = () => {
 	const { available, loading: bookingLoading } = useSelector(
 		state => state.checkBooking
 	)
-	const { user } = useSelector(state => state.loadedUser);
+	const { user } = useSelector(state => state.loadedUser)
 	const [checkInDate, setCheckInDate] = useState(null)
 	const [checkOutDate, setCheckOutDate] = useState(null)
 	const [daysOfStay, setDaysOfStay] = useState(0)
@@ -44,11 +45,9 @@ const RoomDetails = () => {
 				checkBooking(id, dates[0].toISOString(), dates[1].toISOString())
 			)
 		}
-
-		
 	}
 
-	const newBookingHandler = () => {
+	const newBookingHandler = async () => {
 		const bookingData = {
 			room: router.query.id,
 			checkInDate,
@@ -62,6 +61,22 @@ const RoomDetails = () => {
 		}
 
 		console.log({ bookingData })
+
+		try {
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+
+			const { data } = await axios.post(
+				'/api/bookings',
+				bookingData,
+				config
+			)
+		} catch (error) {
+			console.log(error)
+		}
 	}
 	return (
 		<>
