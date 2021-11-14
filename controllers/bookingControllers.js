@@ -119,3 +119,16 @@ export const checkBookedDatesOfRoom = catchAsyncErrors(
 		})
 	}
 )
+
+//GET get all booking of current user: api/bookings/me
+export const myBookings = catchAsyncErrors(async (req, res, next) => {
+	const bookings = await Booking.find({ user: req.user.sub })
+	if (!bookings) {
+		next(new ErrorHandler(404, 'No bookings found'))
+	}
+
+	res.status(200).json({
+		success: true,
+		bookings
+	})
+})

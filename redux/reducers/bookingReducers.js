@@ -60,3 +60,26 @@ export const bookedDatesReducer = (state = {dates: [], loading: false, error: nu
 			return state
 	}
 }
+
+// store my bookings reducer
+export const bookingsReducer = (state = {bookings: [], loading: false, error: null}, action) => {
+	switch(action.type) {
+		case MY_BOOKINGS_SUCCESS:
+			return {
+				bookings: action.payload,
+				loading: false,
+			}
+		case MY_BOOKINGS_FAIL:
+			return {
+				error: action.payload,
+				loading: false,
+			}
+		case CLEAR_ERRORS:
+			return {
+				...state,
+				error: null
+			}
+		default:
+			return state
+	}
+}
