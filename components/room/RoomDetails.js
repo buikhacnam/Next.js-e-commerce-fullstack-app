@@ -9,21 +9,39 @@ import RoomFeatures from './RoomFeatures'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useRouter } from 'next/router'
-import { checkBooking } from '../../redux/actions/bookingActions'
+import {
+	checkBooking,
+	getBookedDates,
+} from '../../redux/actions/bookingActions'
 import axios from 'axios'
 
 const RoomDetails = () => {
 	const router = useRouter()
 	const dispatch = useDispatch()
 	const { room, error } = useSelector(state => state.roomDetails)
+	const { dates } = useSelector(state => state.bookedDates)
 	const { available, loading: bookingLoading } = useSelector(
 		state => state.checkBooking
 	)
+	const [excludedDates, setExcludedDates] = useState([])
 	const { user } = useSelector(state => state.loadedUser)
 	const [checkInDate, setCheckInDate] = useState(null)
 	const [checkOutDate, setCheckOutDate] = useState(null)
 	const [daysOfStay, setDaysOfStay] = useState(0)
 	const { id } = router.query
+
+	useEffect(() => {
+		dispatch(getBookedDates(id))
+	}, [])
+
+	useEffect(() => {
+		if (dates.length > 0) {
+			const excludedDays = dates.map(date => {
+				return new Date(date)
+			})
+			setExcludedDates(excludedDays)
+		}
+	}, [dates])
 
 	const onChange = dates => {
 		//dates is an array of start and end dates: [startDate, endDate]
@@ -145,6 +163,7 @@ const RoomDetails = () => {
 								selectsRange
 								inline
 								minDate={new Date()}
+								excludeDates={excludedDates}
 							/>
 							{available === true && (
 								<div className='alert alert-success my-3 font-weight-bold'>

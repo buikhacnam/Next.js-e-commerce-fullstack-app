@@ -31,6 +31,7 @@ export const newBooking = catchAsyncErrors(async (req, res, next) => {
 		daysOfStay,
 		amountPaid,
 		paymentInfo,
+		paidAt: Date.now(),
 	})
 
 	await booking.save()
@@ -81,28 +82,40 @@ export const checkRoomAvailability = catchAsyncErrors(
 
 //GET check booked dates of a room (display days booked in calendar): /api/bookings/check-booked-dates
 
-export const checkBookedDatesOfRoom = catchAsyncErrors(async (req, res, next) => {
-	const { roomId } = req.query
+export const checkBookedDatesOfRoom = catchAsyncErrors(
+	async (req, res, next) => {
+		const { roomId } = req.query
 
-	const bookings = await Booking.find({ room: roomId })
+		const bookings = await Booking.find({ room: roomId })
 
-	if (!bookings) {
-		next(new ErrorHandler(404, 'No bookings found'))
+		if (!bookings) {
+			next(new ErrorHandler(404, 'No bookings found'))
+		}
+		// store all booked dates in an array
+		let bookedDates = []
+
+		const timeDifference = moment().utcOffset() / 60
+
+		bookings.forEach(booking => {
+			const checkInDate = moment(booking.checkInDate).add(
+				timeDifference,
+				'hour'
+			)
+			const checkOutDate = moment(booking.checkOutDate).add(
+				timeDifference,
+				'hour'
+			)
+			const range = moment.range(
+				moment(checkInDate),
+				moment(checkOutDate)
+			)
+			const dates = Array.from(range.by('days'))
+			bookedDates = bookedDates.concat(dates)
+		})
+
+		res.status(200).json({
+			success: true,
+			bookedDates,
+		})
 	}
-	// store all booked dates in an array
-	let bookedDates = []
-
-	bookings.forEach(booking => {
-		const range = moment.range(
-			moment(booking.checkInDate),
-			moment(booking.checkOutDate)
-		)
-		const dates = Array.from(range.by('days'))
-		bookedDates = bookedDates.concat(dates)
-	})
-
-	res.status(200).json({
-		success: true,
-		bookedDates,
-	})
-})
+)

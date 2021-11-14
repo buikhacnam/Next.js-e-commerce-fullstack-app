@@ -37,3 +37,26 @@ export const checkBookingReducer = (
 			return state
 	}
 }
+
+// get all booked dates reducer
+export const bookedDatesReducer = (state = {dates: [], loading: false, error: null}, action) => {
+	switch (action.type) {
+		case BOOKED_DATES_SUCCESS:
+			return {
+				loading: false,
+				dates: action.payload
+			}
+		case BOOKED_DATES_FAIL:
+			return {
+				loading: false,
+				error: action.payload
+			}
+		case CLEAR_ERRORS:
+			return {
+				...state,
+				error: null
+			}
+		default:
+			return state
+	}
+}

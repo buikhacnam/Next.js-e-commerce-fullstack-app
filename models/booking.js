@@ -1,3 +1,4 @@
+import timeZone from 'mongoose-timezone'
 const mongoose = require('mongoose')
 
 const bookingSchema = new mongoose.Schema({
@@ -37,7 +38,17 @@ const bookingSchema = new mongoose.Schema({
 			required: true,
 		},
 	},
+	paidAt: {
+        type: Date,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 	
 })
+
+bookingSchema.plugin(timeZone)
 module.exports =
 	mongoose.models.Booking || mongoose.model('Booking', bookingSchema)
