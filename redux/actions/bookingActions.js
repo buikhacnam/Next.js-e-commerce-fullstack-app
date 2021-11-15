@@ -83,3 +83,23 @@ export const myBookings = (authCookie, req) => async dispatch => {
 	}
 	dispatch({ type: CLEAR_ERRORS })
 }
+
+export const bookingDetais = (authCookie, req, id) => async dispatch => {
+	const { origin } = absoluteUrl(req)
+	try {
+		const config = {
+			headers: {
+				cookie: authCookie,
+			},
+		}
+		const { data } = await axios.get(`${origin}/api/bookings/${id}`, config)
+		dispatch({ type: BOOKING_DETAILS_SUCCESS, payload: data.booking })
+	} catch (error) {
+		toast.error('loading booking details failed')
+		dispatch({
+			type: BOOKING_DETAILS_FAIL,
+			payload: error.response.data.message,
+		})
+	}
+	dispatch({ type: CLEAR_ERRORS })
+}

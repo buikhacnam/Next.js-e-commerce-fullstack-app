@@ -39,22 +39,25 @@ export const checkBookingReducer = (
 }
 
 // get all booked dates reducer
-export const bookedDatesReducer = (state = {dates: [], loading: false, error: null}, action) => {
+export const bookedDatesReducer = (
+	state = { dates: [], loading: false, error: null },
+	action
+) => {
 	switch (action.type) {
 		case BOOKED_DATES_SUCCESS:
 			return {
 				loading: false,
-				dates: action.payload
+				dates: action.payload,
 			}
 		case BOOKED_DATES_FAIL:
 			return {
 				loading: false,
-				error: action.payload
+				error: action.payload,
 			}
 		case CLEAR_ERRORS:
 			return {
 				...state,
-				error: null
+				error: null,
 			}
 		default:
 			return state
@@ -62,8 +65,11 @@ export const bookedDatesReducer = (state = {dates: [], loading: false, error: nu
 }
 
 // store my bookings reducer
-export const bookingsReducer = (state = {bookings: [], loading: false, error: null}, action) => {
-	switch(action.type) {
+export const bookingsReducer = (
+	state = { bookings: [], loading: false, error: null },
+	action
+) => {
+	switch (action.type) {
 		case MY_BOOKINGS_SUCCESS:
 			return {
 				bookings: action.payload,
@@ -77,7 +83,33 @@ export const bookingsReducer = (state = {bookings: [], loading: false, error: nu
 		case CLEAR_ERRORS:
 			return {
 				...state,
-				error: null
+				error: null,
+			}
+		default:
+			return state
+	}
+}
+
+// store booking details reducer
+export const bookingDetailsReducer = (
+	state = { booking: {}, loading: false, error: null },
+	action
+) => {
+	switch (action.type) {
+		case BOOKING_DETAILS_SUCCESS:
+			return {
+				booking: action.payload,
+				loading: false,
+			}
+		case BOOKING_DETAILS_FAIL:
+			return {
+				error: action.payload,
+				loading: false,
+			}
+		case CLEAR_ERRORS:
+			return {
+				...state,
+				error: null,
 			}
 		default:
 			return state
