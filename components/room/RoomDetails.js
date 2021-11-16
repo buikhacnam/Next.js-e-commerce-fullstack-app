@@ -14,11 +14,13 @@ import {
 	getBookedDates,
 } from '../../redux/actions/bookingActions'
 import axios from 'axios'
+import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants'
+import getStripe from '../../utils/getStripe'
 
 const RoomDetails = () => {
 	const router = useRouter()
 	const dispatch = useDispatch()
-	const { room, error } = useSelector(state => state.roomDetails)
+	const { room } = useSelector(state => state.roomDetails)
 	const { dates } = useSelector(state => state.bookedDates)
 	const { available, loading: bookingLoading } = useSelector(
 		state => state.checkBooking
@@ -28,10 +30,15 @@ const RoomDetails = () => {
 	const [checkInDate, setCheckInDate] = useState(null)
 	const [checkOutDate, setCheckOutDate] = useState(null)
 	const [daysOfStay, setDaysOfStay] = useState(0)
+	const [paymentLoading, setPaymentLoading] = useState(false)
 	const { id } = router.query
 
 	useEffect(() => {
 		dispatch(getBookedDates(id))
+
+		return () => {
+			dispatch({ type: CHECK_BOOKING_RESET })
+		}
 	}, [])
 
 	useEffect(() => {
@@ -42,6 +49,27 @@ const RoomDetails = () => {
 			setExcludedDates(excludedDays)
 		}
 	}, [dates])
+
+	const bookRoom = async (id, pricePernight) => {
+		setPaymentLoading(true)
+		const amount = pricePernight * daysOfStay
+		try {
+			const link = `/api/checkout_session/${id}?checkInDate=${checkInDate.toISOString()}&checkOutDate=${checkOutDate.toISOString()}&daysOfStay=${daysOfStay}`
+			const { data } = await axios.get(link, { params: { amount } }) //...link?amount=100
+			const stripe = await getStripe()
+
+			//redirect to checkout page
+			stripe.redirectToCheckout({
+				sessionId: data.id,
+			})
+
+			setPaymentLoading(false)
+		} catch (error) {
+			console.log(error)
+			setPaymentLoading(false)
+			toast.error(error.message)
+		}
+	}
 
 	const onChange = dates => {
 		//dates is an array of start and end dates: [startDate, endDate]
@@ -151,7 +179,7 @@ const RoomDetails = () => {
 							<hr />
 
 							<p className='mt-5 mb-3'>
-								Pick Check In & Check Out Date
+								Pick Check In and Check Out Date
 							</p>
 
 							<DatePicker
@@ -184,10 +212,13 @@ const RoomDetails = () => {
 							)}
 
 							<button
-								onClick={newBookingHandler}
+								onClick={() => {
+									bookRoom(room._id, room.pricePernight)
+								}}
 								className='btn btn-block py-3 booking-btn'
+								disabled={bookingLoading || paymentLoading}
 							>
-								Pay
+								Pay - ${room.pricePernight * daysOfStay}
 							</button>
 						</div>
 					</div>
