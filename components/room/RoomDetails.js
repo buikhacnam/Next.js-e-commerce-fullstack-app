@@ -16,6 +16,8 @@ import {
 import axios from 'axios'
 import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants'
 import getStripe from '../../utils/getStripe'
+import ButtonLoader from '../layout/ButtonLoader'
+
 
 const RoomDetails = () => {
 	const router = useRouter()
@@ -217,8 +219,9 @@ const RoomDetails = () => {
 								}}
 								className='btn btn-block py-3 booking-btn'
 								disabled={bookingLoading || paymentLoading}
+								loading={bookingLoading || paymentLoading}
 							>
-								Pay - ${room.pricePernight * daysOfStay}
+								{(bookingLoading || paymentLoading) ? <ButtonLoader /> : `Pay - $${room.pricePernight * daysOfStay}`}
 							</button>
 						</div>
 					</div>
