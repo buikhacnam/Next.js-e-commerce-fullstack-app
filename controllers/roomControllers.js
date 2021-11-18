@@ -1,8 +1,8 @@
 import Room from '../models/room'
+import Booking from '../models/booking'
 import ErrorHandler from '../utils/errorHandler'
 import catchAsyncError from '../middlewares/catchAsyncError'
 import APIFeatures from '../utils/apiFeatures'
-
 
 // get all rooms
 export const allRooms = catchAsyncError(async (req, res) => {
@@ -10,13 +10,11 @@ export const allRooms = catchAsyncError(async (req, res) => {
 	const resPerPage = 4
 	// get the total number of rooms (all conditions)
 	const roomsCount = await Room.countDocuments()
-	const features = new APIFeatures(Room.find({}), req.query)
-		.search()
-		.filter()
+	const features = new APIFeatures(Room.find({}), req.query).search().filter()
 	let rooms = await features.query
 	// afther running the search method, we get the result of the query, for exemple:
 	// const rooms = await Room.find({ address: { '$regex': 'new york', '$options': 'i' } })
-	
+
 	// get number of rooms after filtering above
 	let filteredRoomsCount = rooms.length
 
@@ -25,7 +23,7 @@ export const allRooms = catchAsyncError(async (req, res) => {
 	// query the room again after pagination
 	// need to add clone to avoid 'Query was already executed' error
 	rooms = await features.query.clone()
-	
+
 	res.status(200).json({
 		success: true,
 		roomsCount,
@@ -101,3 +99,70 @@ export const deleteRoom = async (req, res, next) => {
 		})
 	}
 }
+
+//POST create a new review => /api/reviews
+export const createRoomReview = catchAsyncError(async (req, res, next) => {
+	const { rating, comment, roomId } = req.body
+
+	const review = {
+		user: req.user.sub,
+		name: req.user.name,
+		rating: Number(rating),
+		comment,
+	}
+
+	const room = await Room.findById(roomId)
+
+	// check if the user has already reviewed this particular room
+	const hasReviewed = room.reviews.some(
+		review => review.user.toString() === req.user.sub.toString()
+	)
+
+	if (hasReviewed) {
+		// update the review
+		room.reviews.forEach(review => {
+			// find the review that matches the user and update it
+			if (review.user.toString() === req.user.sub.toString()) {
+				review.rating = rating
+				review.comment = comment
+			}
+		})
+	} else {
+		// add the review
+		room.reviews.push(review)
+		room.numOfReviews = room.reviews.length
+	}
+
+	//update the avarage rating
+	room.rating =
+		room.reviews.reduce((total, review) => total + review.rating, 0) /
+		room.reviews.length
+
+	await room.save({ validateBeforeSave: false })
+
+	res.status(200).json({
+		success: true,
+	})
+})
+
+//GET: check if user can leave a review (they actually booked the room) => /api/reviews/check-review-availability
+export const checkReviewAvailability = catchAsyncError(
+	async (req, res, next) => {
+		const { roomId } = req.query
+
+		const bookings = await Booking.find({
+			room: roomId,
+			user: req.user.sub,
+		})
+
+		let isReviewAvailable = false
+		if (bookings.length > 0) {
+			isReviewAvailable = true
+		}
+
+		res.status(200).json({
+			success: true,
+			isReviewAvailable,
+		})
+	}
+)

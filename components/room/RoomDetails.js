@@ -17,7 +17,8 @@ import axios from 'axios'
 import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants'
 import getStripe from '../../utils/getStripe'
 import ButtonLoader from '../layout/ButtonLoader'
-
+import NewReview from '../review/NewReview'
+import ListReviews from '../review/ListReviews'
 
 const RoomDetails = () => {
 	const router = useRouter()
@@ -145,7 +146,7 @@ const RoomDetails = () => {
 						></div>
 					</div>
 					<span id='no_of_reviews'>
-						(({room.numOfReviews} Reviews))
+						({room.numOfReviews} Reviews)
 					</span>
 				</div>
 
@@ -221,35 +222,24 @@ const RoomDetails = () => {
 								disabled={bookingLoading || paymentLoading}
 								loading={bookingLoading || paymentLoading}
 							>
-								{(bookingLoading || paymentLoading) ? <ButtonLoader /> : `Pay - $${room.pricePernight * daysOfStay}`}
+								{bookingLoading || paymentLoading ? (
+									<ButtonLoader />
+								) : (
+									`Pay - $${room.pricePernight * daysOfStay}`
+								)}
 							</button>
 						</div>
 					</div>
 				</div>
 
-				<div className='reviews w-75'>
-					<h3>Reviews:</h3>
-					<hr />
-					<div className='review-card my-3'>
-						<div className='rating-outer'>
-							<div className='rating-inner'></div>
-						</div>
-						<p className='review_user'>by John</p>
-						<p className='review_comment'>Good Quality</p>
+				<NewReview />
+				{room.reviews && room.reviews.length > 0 ? (
+					<ListReviews reviews={room.reviews} />
+				) : (
+					<p>No reviews on this room yet</p>
+				)}
 
-						<hr />
-					</div>
-
-					<div className='review-card my-3'>
-						<div className='rating-outer'>
-							<div className='rating-inner'></div>
-						</div>
-						<p className='review_user'>by John</p>
-						<p className='review_comment'>Good Quality</p>
-
-						<hr />
-					</div>
-				</div>
+				
 			</div>
 		</>
 	)
