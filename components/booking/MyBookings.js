@@ -96,7 +96,7 @@ const MyBookings = () => {
 
 		bookings &&
 			bookings.forEach(booking => {
-				data.rows.push({
+				data.rows.unshift({
 					id: booking._id,
 					checkIn: new Date(booking.checkInDate).toLocaleString(
 						'en-US'
