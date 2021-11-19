@@ -21,7 +21,6 @@ const Home = () => {
 	const location = router.query?.location
 	let count = roomsCount
 	if (location) count = filteredRoomsCount
-	console.log('rooms', rooms)
 
 	useEffect(() => {
 		if (error) {
@@ -38,7 +37,7 @@ const Home = () => {
 		<>
 			<section id='rooms' className='container mt-5'>
 				<h2 className='mb-3 ml-2 stays-heading'>
-					{location ? `Stay in ${location}` : 'All rooms'}
+					{location ? `Stay in ${location}` : 'All cabins'}
 				</h2>
 
 				<Link href='/search' passHref>
