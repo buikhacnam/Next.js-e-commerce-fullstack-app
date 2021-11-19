@@ -61,10 +61,12 @@ const RoomDetails = () => {
 			const { data } = await axios.get(link, { params: { amount } }) //...link?amount=100
 			const stripe = await getStripe()
 
+			console.log('stripe', stripe)
+
 			//redirect to checkout page
-			stripe.redirectToCheckout({
-				sessionId: data.id,
-			})
+			// stripe.redirectToCheckout({
+			// 	sessionId: data.id,
+			// })
 
 			setPaymentLoading(false)
 		} catch (error) {
