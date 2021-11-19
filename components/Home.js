@@ -37,7 +37,7 @@ const Home = () => {
 		<>
 			<section id='rooms' className='container mt-5'>
 				<h2 className='mb-3 ml-2 stays-heading'>
-					{location ? `Stay in ${location}` : 'All cabins'}
+					{location ? `Stay in ${location}` : 'Next Cruise - All Cabins'}
 				</h2>
 
 				<Link href='/search' passHref>

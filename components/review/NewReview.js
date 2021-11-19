@@ -23,14 +23,15 @@ const NewReview = () => {
 		}
 	}, [])
 
-	const submitHandler = () => {
+	const submitHandler = async () => {
 		const reviewData = {
 			rating,
 			comment,
 			roomId: id,
 		}
 
-		dispatch(newReview(reviewData))
+		await dispatch(newReview(reviewData))
+		window.location.reload()
 	}
 
 	function setUserRatings() {

@@ -134,7 +134,7 @@ export const createRoomReview = catchAsyncError(async (req, res, next) => {
 	}
 
 	//update the avarage rating
-	room.rating =
+	room.ratings =
 		room.reviews.reduce((total, review) => total + review.rating, 0) /
 		room.reviews.length
 

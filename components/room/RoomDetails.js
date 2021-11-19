@@ -94,40 +94,11 @@ const RoomDetails = () => {
 			dispatch(
 				checkBooking(id, dates[0].toISOString(), dates[1].toISOString())
 			)
+		} else {
+			setDaysOfStay(0)
 		}
 	}
 
-	const newBookingHandler = async () => {
-		const bookingData = {
-			room: router.query.id,
-			checkInDate,
-			checkOutDate,
-			daysOfStay,
-			amountPaid: 100,
-			paymentInfo: {
-				id: 'STRIPE_PAYMENT_ID',
-				status: 'PAID',
-			},
-		}
-
-		console.log({ bookingData })
-
-		try {
-			const config = {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-
-			const { data } = await axios.post(
-				'/api/bookings',
-				bookingData,
-				config
-			)
-		} catch (error) {
-			console.log(error)
-		}
-	}
 	return (
 		<>
 			<Head>
@@ -141,9 +112,7 @@ const RoomDetails = () => {
 					<div className='rating-outer'>
 						<div
 							className='rating-inner'
-							style={{
-								width: `${(room.ratings / 5) * 100}%`,
-							}}
+							style={{ width: `${(room.ratings / 5) * 100}%` }}
 						></div>
 					</div>
 					<span id='no_of_reviews'>
@@ -182,7 +151,7 @@ const RoomDetails = () => {
 							</p>
 							<hr />
 
-							<p className='mt-5 mb-3'>
+							<p className='mb-3'>
 								Pick Check In and Check Out Date
 							</p>
 
@@ -217,10 +186,21 @@ const RoomDetails = () => {
 
 							<button
 								onClick={() => {
-									bookRoom(room._id, room.pricePernight)
+									if (
+										!daysOfStay ||
+										bookingLoading ||
+										paymentLoading
+									) {
+									} else {
+										bookRoom(room._id, room.pricePernight)
+									}
 								}}
 								className='btn btn-block py-3 booking-btn'
-								disabled={bookingLoading || paymentLoading}
+								disabled={
+									!daysOfStay ||
+									bookingLoading ||
+									paymentLoading
+								}
 								loading={bookingLoading || paymentLoading}
 							>
 								{bookingLoading || paymentLoading ? (
@@ -229,6 +209,22 @@ const RoomDetails = () => {
 									`Pay - $${room.pricePernight * daysOfStay}`
 								)}
 							</button>
+							{daysOfStay ? (
+								<div
+									style={{
+										fontSize: '0.8rem',
+										marginTop: '15px',
+									}}
+								>
+									<span>
+										Testing Credit Card: 4242 4242 4242 4242
+									</span>
+									<br />
+									<span>Expiry: 03/30</span> <br />
+									<span>CVV: 123</span> <br />
+									<span>Name: Bui Nam</span>
+								</div>
+							) : null}
 						</div>
 					</div>
 				</div>
@@ -239,8 +235,6 @@ const RoomDetails = () => {
 				) : (
 					<p>No reviews on this room yet</p>
 				)}
-
-				
 			</div>
 		</>
 	)

@@ -16,7 +16,7 @@ const Layout = ({ children, title = 'Book The Best Cruise!' }) => {
 				/>
 			</Head>
 			<Header />
-			<ToastContainer />
+			<ToastContainer position='bottom-right'/>
 			{children}
 			<Footer />
 		</div>

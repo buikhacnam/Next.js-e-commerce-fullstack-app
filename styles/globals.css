@@ -140,7 +140,7 @@ body {
   background-color: #e61e4d;
   border-color: #e61e4d;
   color: white;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   font-weight: bold;
 }
 
@@ -491,4 +491,8 @@ input::placeholder {
 
 #description_404 {
   color: grey;
+}
+
+[data-test="datatable"] {
+  overflow: scroll !important;
 }
