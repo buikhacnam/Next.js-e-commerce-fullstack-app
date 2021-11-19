@@ -4,7 +4,7 @@ let stripePromise
 
 const getStripe = async () => {
 	if (!stripePromise) {
-		stripePromise = loadStripe(process.env.STRIPE_API_KEY)
+		stripePromise = loadStripe(`${process.env.STRIPE_API_KEY}`)
 	}
 	return stripePromise
 }
