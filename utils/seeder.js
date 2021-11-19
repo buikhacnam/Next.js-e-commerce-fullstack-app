@@ -2,7 +2,7 @@ const Room = require('../models/room')
 const mongoose = require('mongoose')
 const rooms = require('../data/rooms')
 
-mongoose.connect(process.env.DB_URL, {
+mongoose.connect(DB_LOCAL_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then((con) => console.log('Connected to Local MongoDB')).catch((err) => console.log(err))
