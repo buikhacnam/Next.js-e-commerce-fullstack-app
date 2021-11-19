@@ -27,7 +27,7 @@ const Search = () => {
 								type='text'
 								className='form-control'
 								id='location_field'
-								placeholder='type in a location; ex: new york'
+								placeholder='type in a location; ex: halong'
 								value={location}
 								onChange={e => setLocation(e.target.value)}
 							/>

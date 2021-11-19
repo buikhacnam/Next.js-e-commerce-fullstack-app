@@ -86,7 +86,7 @@ const BookingDetails = () => {
 									</div>
 
 									<div className='col-4 col-lg-2 mt-4 mt-lg-0'>
-										<p>${booking.room.pricePerNight}</p>
+										<p>${booking.room.pricePernight}</p>
 									</div>
 
 									<div className='col-4 col-lg-3 mt-4 mt-lg-0'>

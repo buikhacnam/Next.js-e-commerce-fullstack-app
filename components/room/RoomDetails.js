@@ -188,6 +188,7 @@ const RoomDetails = () => {
 								onClick={() => {
 									if (
 										!daysOfStay ||
+										!user ||
 										bookingLoading ||
 										paymentLoading
 									) {
@@ -198,6 +199,7 @@ const RoomDetails = () => {
 								className='btn btn-block py-3 booking-btn'
 								disabled={
 									!daysOfStay ||
+									!user ||
 									bookingLoading ||
 									paymentLoading
 								}

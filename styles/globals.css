@@ -494,5 +494,5 @@ input::placeholder {
 }
 
 [data-test="datatable"] {
-  overflow: scroll !important;
+  overflow: auto !important;
 }
