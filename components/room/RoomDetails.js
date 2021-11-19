@@ -60,7 +60,7 @@ const RoomDetails = () => {
 			const link = `/api/checkout_session/${id}?checkInDate=${checkInDate.toISOString()}&checkOutDate=${checkOutDate.toISOString()}&daysOfStay=${daysOfStay}`
 			const { data } = await axios.get(link, { params: { amount } }) //...link?amount=100
 			const stripe = await getStripe()
-
+			console.log('data', data)
 			console.log('stripe', stripe)
 
 			//redirect to checkout page
