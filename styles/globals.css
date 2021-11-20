@@ -259,6 +259,7 @@ nav {
 
 .view-btn {
   background-color: #e61e4d;
+  color: #ffffff
 }
 
 .view-btn a {
@@ -495,4 +496,10 @@ input::placeholder {
 
 [data-test="datatable"] {
   overflow: auto !important;
+}
+
+@media only screen and (max-width: 450px) {
+  .navbar div {
+    margin-right: 40px;
+  }
 }
