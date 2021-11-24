@@ -2,7 +2,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, copy the file example.config.js and paste it to the file next.config.js and fill in your own keys.
+
+Then, seeder the database by running:
+
+```bash
+npm run seeder
+# or
+yarn seeder
+```
+
+Finally, run the development server:
 
 ```bash
 npm run dev
