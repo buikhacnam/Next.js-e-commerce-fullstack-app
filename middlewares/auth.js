@@ -3,17 +3,28 @@ import ErrorHandler from '../utils/errorHandler'
 import { getSession } from 'next-auth/client' // get Session from http://localhost:3000/api/auth/session
 
 const isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
-  
 	const session = await getSession({ req })
 	console.log('session', session)
 	if (!session) {
-		return next(new ErrorHandler(401, 'Not authorized 11111111'))
+		return next(new ErrorHandler('Not authorized 11111111', 401))
 	}
 	req.user = session.user
 	next()
 })
 
 export default isAuthenticatedUser
+
+// handling user roles
+export const authorizeRoles = (...roles) => {
+	return (req, res, next) => {
+		if (!roles.includes(req.user.user.role)) {
+			return next(
+				new ErrorHandler(`Role (${req.user.user.role} is not allowed)`, 403)
+			)
+		}
+		next()
+	}
+}
 
 let session = {
 	user: {

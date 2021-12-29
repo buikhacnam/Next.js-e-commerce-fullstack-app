@@ -32,6 +32,7 @@ export const registerUser = catchAsyncErrors(async (req, res) => {
 			public_id: result.public_id,
 			url: result.secure_url,
 		},
+		role: 'user',
 	})
 
 	res.status(200).json({
@@ -43,6 +44,7 @@ export const registerUser = catchAsyncErrors(async (req, res) => {
 // Current User profile   =>   /api/auth/me
 export const getCurrentUser = catchAsyncErrors(async (req, res, next) => {
 	const user = await User.findById(req.user.sub)
+	
 	if (!user) {
 		return next(new ErrorHandler(404, 'User not found'))
 	}

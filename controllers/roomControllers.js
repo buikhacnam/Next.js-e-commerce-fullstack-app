@@ -166,3 +166,15 @@ export const checkReviewAvailability = catchAsyncError(
 		})
 	}
 )
+
+// ADMIN ------------------------------------------------------------------
+
+// get all rooms - Admin => /api/admin/rooms
+export const allAdminRooms = catchAsyncError(async (req, res) => {
+	const rooms = await Room.find({})
+
+	res.status(200).json({
+		success: true,
+		rooms,
+	})
+})
