@@ -38,6 +38,19 @@ import {
 const initialState = { rooms: [] }
 export const allRoomsReducer = (state = initialState, action) => {
 	switch (action.type) {
+
+		case ADMIN_ROOMS_REQUEST:
+			return {
+				...state,
+				loading: true
+			}
+		case ADMIN_ROOMS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				rooms: action.payload
+			}
+
 		case ALL_ROOMS_SUCCESS:
 			return {
 				roomsCount: action.payload.roomsCount,
@@ -46,6 +59,7 @@ export const allRoomsReducer = (state = initialState, action) => {
 				rooms: action.payload.rooms,
 			}
 		case ALL_ROOMS_FAIL:
+		case ADMIN_ROOMS_FAIL:
 			return {
 				error: action.payload,
 			}

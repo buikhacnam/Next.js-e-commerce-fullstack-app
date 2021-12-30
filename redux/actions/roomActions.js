@@ -134,3 +134,29 @@ export const clearErrors = () => {
 		})
 	}
 }
+
+// ADMIN --------------------------------------------
+
+// Get all rooms - ADMIN
+export const getAdminRooms = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: ADMIN_ROOMS_REQUEST })
+
+        const { data } = await axios.get(`/api/admin/rooms`)
+
+        dispatch({
+            type: ADMIN_ROOMS_SUCCESS,
+            payload: data.rooms
+        })
+
+    } catch (error) {
+
+        console.log(error);
+
+        dispatch({
+            type: ADMIN_ROOMS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
