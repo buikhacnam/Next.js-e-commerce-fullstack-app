@@ -138,25 +138,46 @@ export const clearErrors = () => {
 // ADMIN --------------------------------------------
 
 // Get all rooms - ADMIN
-export const getAdminRooms = () => async (dispatch) => {
-    try {
+export const getAdminRooms = () => async dispatch => {
+	try {
+		dispatch({ type: ADMIN_ROOMS_REQUEST })
 
-        dispatch({ type: ADMIN_ROOMS_REQUEST })
+		const { data } = await axios.get(`/api/admin/rooms`)
 
-        const { data } = await axios.get(`/api/admin/rooms`)
+		dispatch({
+			type: ADMIN_ROOMS_SUCCESS,
+			payload: data.rooms,
+		})
+	} catch (error) {
+		console.log(error)
 
-        dispatch({
-            type: ADMIN_ROOMS_SUCCESS,
-            payload: data.rooms
-        })
+		dispatch({
+			type: ADMIN_ROOMS_FAIL,
+			payload: error.response.data.message,
+		})
+	}
+}
 
-    } catch (error) {
+export const newRoom = roomData => async dispatch => {
+	try {
+		dispatch({ type: NEW_ROOM_REQUEST })
 
-        console.log(error);
+		const config = {
+			header: {
+				'Content-Type': 'application/json',
+			},
+		}
 
-        dispatch({
-            type: ADMIN_ROOMS_FAIL,
-            payload: error.response.data.message
-        })
-    }
+		const { data } = await axios.post(`/api/rooms`, roomData, config)
+
+		dispatch({
+			type: NEW_ROOM_SUCCESS,
+			payload: data,
+		})
+	} catch (error) {
+		dispatch({
+			type: NEW_ROOM_FAIL,
+			payload: error.response.data.message,
+		})
+	}
 }

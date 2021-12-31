@@ -38,17 +38,16 @@ import {
 const initialState = { rooms: [] }
 export const allRoomsReducer = (state = initialState, action) => {
 	switch (action.type) {
-
 		case ADMIN_ROOMS_REQUEST:
 			return {
 				...state,
-				loading: true
+				loading: true,
 			}
 		case ADMIN_ROOMS_SUCCESS:
 			return {
 				...state,
 				loading: false,
-				rooms: action.payload
+				rooms: action.payload,
 			}
 
 		case ALL_ROOMS_SUCCESS:
@@ -147,6 +146,43 @@ export const checkReviewReducer = (
 				...state,
 				error: null,
 			}
+		default:
+			return state
+	}
+}
+
+// create new room reducer
+export const newRoomReducer = (state = { room: {} }, action) => {
+	switch (action.type) {
+		case NEW_ROOM_REQUEST:
+			return {
+				loading: true,
+			}
+
+		case NEW_ROOM_SUCCESS:
+			return {
+				loading: false,
+				success: action.payload.success,
+				room: action.payload.room,
+			}
+
+		case NEW_ROOM_RESET:
+			return {
+				success: false,
+			}
+
+		case NEW_ROOM_FAIL:
+			return {
+				loading: false,
+				error: action.payload,
+			}
+
+		case CLEAR_ERRORS:
+			return {
+				...state,
+				error: null,
+			}
+
 		default:
 			return state
 	}

@@ -3,6 +3,7 @@ import Booking from '../models/booking'
 import ErrorHandler from '../utils/errorHandler'
 import catchAsyncError from '../middlewares/catchAsyncError'
 import APIFeatures from '../utils/apiFeatures'
+import cloudinary from 'cloudinary'
 
 // get all rooms
 export const allRooms = catchAsyncError(async (req, res) => {
@@ -36,7 +37,24 @@ export const allRooms = catchAsyncError(async (req, res) => {
 
 //create a new room
 export const newRoom = catchAsyncError(async (req, res) => {
+	const images = req.body.images
+	let imagesLink = []
+
+	for (let i = 0; i < images.length; i++) {
+		let image = await cloudinary.v2.uploader.upload(images[i], {
+			folder: 'cruise/rooms',
+			width: '150',
+			crop: 'scale',
+		})
+		imagesLink.push({
+			public_id: image.public_id,
+			url: image.secure_url,
+		})
+	}
+	req.body.images = imagesLink
+	req.body.user = req.user.sub
 	const room = await Room.create(req.body)
+
 	res.status(200).json({
 		success: true,
 		message: 'New Room Created',
